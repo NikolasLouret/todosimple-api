@@ -1,5 +1,7 @@
 package com.nikolaslouret.todosimple.models;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -7,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -17,11 +20,13 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 @Entity
 @Table(name = User.TABLE_NAME)
 public class User {
+    public static final String TABLE_NAME = "user";
+
+    // Validation
     public interface CreateUser{}
     public interface UpdateUser{}
 
-    public static final String TABLE_NAME = "user";
-
+    // Attributes
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
@@ -38,8 +43,10 @@ public class User {
     @Size(groups = { CreateUser.class, UpdateUser.class }, min = 8, max = 60)
     private String password;
 
-    // private List<Task> tasks = new ArrayList<Task>();
+    @OneToMany(mappedBy = "user")
+    private List<Task> tasks = new ArrayList<Task>();
 
+    // Constructors
 
     public User() {
     }
@@ -50,6 +57,7 @@ public class User {
         this.password = password;
     }
 
+    // Getters and Setters
 
     public Long getId() {
         return this.id;
@@ -75,6 +83,13 @@ public class User {
         this.password = password;
     }
 
+    public List<Task> getTasks() {
+        return this.tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -106,5 +121,4 @@ public class User {
         result = prime * result + (this.id == null ? 0 : this.id.hashCode());
         return result;
     }
-
 }
